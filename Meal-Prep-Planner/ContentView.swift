@@ -18,14 +18,37 @@ struct ContentView: View {
                 NavigationLink(destination: DurationView(), label: {
                     Text("Make a meal")
                 })
+                
+                NavigationLink(destination: IngredientsView(), label: {
+                    Text("Add/Remove Ingredients")
+                })
             }
-            
             .padding()
             .navigationBarTitle("Home Page")
         }
         
         
        
+    }
+}
+
+struct IngredientsView : View {
+    @State private var ingredients = [String]()
+    @State private var currentIngredient = ""
+    var body: some View {
+        List
+        {
+            ForEach(ingredients, id: \.self)
+            {
+                Text($0)
+            }.onDelete(perform: { indexSet in
+                ingredients.remove(atOffsets: indexSet)
+            })
+        }
+        
+        TextField("Enter the ingredient", text: $currentIngredient).onSubmit {
+            ingredients.append(currentIngredient)
+        }.padding()
     }
 }
 
@@ -84,9 +107,19 @@ struct CheckIngredientsView : View {
 }
 
 struct TutorialView : View {
+    @State private var steps : [String] = ["0", "1", "2", "3", "4"]
     var body: some View {
-        Text("Presents with embed tutorial as a scroll view. Go back to home page")
-    } 
+        ScrollView(.horizontal)
+        {
+            HStack{
+                ForEach(steps, id: \.self)
+                {
+                    Text($0).clipShape(.rect).background(.red).padding(5).font(.title)
+                }
+            }
+        }.scrollTargetLayout()
+            .navigationTitle("Tutorial Scroll")
+    }
 }
 
 #Preview {
